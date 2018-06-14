@@ -85,9 +85,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse{
             interstitialAd.show();
         }
 
-        Toast.makeText(this, "NEW PERFORMANCE", Toast.LENGTH_SHORT).show();
-
-        String joke = "TESTEEEEEEE";
+        String joke = null;
         try {
             joke = endpointsAsyncTask.get();
         } catch (Exception e) {
