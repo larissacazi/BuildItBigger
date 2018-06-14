@@ -1,5 +1,3 @@
-import android.test.UiThreadTest;
-
 import com.udacity.gradle.builditbigger.AsyncResponse;
 import com.udacity.gradle.builditbigger.EndpointsAsyncTask;
 

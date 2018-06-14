@@ -25,9 +25,11 @@ allprojects {
 }
 
 
+
 task helloTask << {
 
 }
 
 helloTask.dependsOn ":backend:appengineStart"
+helloTask.doLast {":test"}
 helloTask.finalizedBy ":backend:appengineStop"
