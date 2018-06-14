@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdListener;
@@ -22,17 +23,16 @@ import zimmermann.larissa.jokes.JokesProvider;
 
 
 public class MainActivity extends AppCompatActivity implements AsyncResponse{
-
-    private EndpointsAsyncTask endpointsAsyncTask;
     private InterstitialAd interstitialAd;
+    private ProgressBar spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        endpointsAsyncTask = new EndpointsAsyncTask(this);
-        endpointsAsyncTask.execute();
+        spinner = (ProgressBar)findViewById(R.id.progressBar);
+        spinner.setVisibility(View.GONE);
 
         if (getPackageName().equals("com.udacity.gradle.testing.free")) {
             MobileAds.initialize(this,
@@ -77,34 +77,27 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse{
     }
 
     public void tellJoke(View view) {
-        //JokesProvider jokesProvider = new JokesProvider();
-        //String joke = jokesProvider.tellJoke();
-        //Toast.makeText(this, jokesProvider.tellJoke(), Toast.LENGTH_SHORT).show();
+        spinner.setVisibility(View.VISIBLE);
+        EndpointsAsyncTask endpointsAsyncTask = new EndpointsAsyncTask(this);
+        endpointsAsyncTask.execute();
 
-        if (getPackageName().equals("com.udacity.gradle.testing.free")) {
+        if(getPackageName().equals("com.udacity.gradle.testing.free")) {
             interstitialAd.show();
-        }
-
-        String joke = null;
-        try {
-            joke = endpointsAsyncTask.get();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        if (joke != null) {
-            //Starting JokeActivity
-            Intent intent = new Intent(this, JokesActivity.class);
-            Bundle b = new Bundle();
-            b.putString(JokesProvider.JOKE, joke);
-            intent.putExtras(b);
-            startActivity(intent);
         }
     }
 
 
     @Override
     public void processFinish(String output) {
-
+        spinner.setVisibility(View.GONE);
+        if (output != null) {
+            //Starting JokeActivity
+            spinner.setVisibility(View.GONE);
+            Intent intent = new Intent(this, JokesActivity.class);
+            Bundle b = new Bundle();
+            b.putString(JokesProvider.JOKE, output);
+            intent.putExtras(b);
+            startActivity(intent);
+        }
     }
 }
