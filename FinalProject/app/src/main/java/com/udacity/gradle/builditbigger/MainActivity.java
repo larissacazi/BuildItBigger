@@ -10,6 +10,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
+
 import java.util.concurrent.ExecutionException;
 
 import zimmermann.larissa.androidjokes.JokesActivity;
@@ -19,6 +24,7 @@ import zimmermann.larissa.jokes.JokesProvider;
 public class MainActivity extends AppCompatActivity implements AsyncResponse{
 
     private EndpointsAsyncTask endpointsAsyncTask;
+    private InterstitialAd interstitialAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +33,24 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse{
 
         endpointsAsyncTask = new EndpointsAsyncTask(this);
         endpointsAsyncTask.execute();
+
+        if (getPackageName().equals("com.udacity.gradle.testing.free")) {
+            MobileAds.initialize(this,
+                    "ca-app-pub-3940256099942544~3347511713");
+
+            interstitialAd = new InterstitialAd(this);
+            interstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+            interstitialAd.loadAd(new AdRequest.Builder().build());
+
+            interstitialAd.setAdListener(new AdListener() {
+                @Override
+                public void onAdClosed() {
+                    // Load the next interstitial.
+                    interstitialAd.loadAd(new AdRequest.Builder().build());
+                }
+
+            });
+        }
     }
 
 
@@ -56,6 +80,10 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse{
         //JokesProvider jokesProvider = new JokesProvider();
         //String joke = jokesProvider.tellJoke();
         //Toast.makeText(this, jokesProvider.tellJoke(), Toast.LENGTH_SHORT).show();
+
+        if (getPackageName().equals("com.udacity.gradle.testing.free")) {
+            interstitialAd.show();
+        }
 
         Toast.makeText(this, "NEW PERFORMANCE", Toast.LENGTH_SHORT).show();
 
