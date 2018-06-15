@@ -26,10 +26,9 @@ allprojects {
 
 
 
-task helloTask << {
-
+task helloTask <<{
 }
 
 helloTask.dependsOn ":backend:appengineStart"
-helloTask.doLast {":test"}
+helloTask.doLast {":app:connectedAndroidTest"}
 helloTask.finalizedBy ":backend:appengineStop"
